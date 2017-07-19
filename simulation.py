@@ -1,8 +1,8 @@
-from Board import *
-from AI import *
+from board import *
+from ai import *
 
 # Length of all ships
-ships = [5,4,3,2]
+ships = [4,3,3,2]
 
 # creates ships in random locations
 def create_enemy_board():
@@ -18,31 +18,22 @@ def create_enemy_board():
             align = random.choice(list(ShipAlignment))
     return board
 
-# create both board with random ships
-enemyB = create_enemy_board()
-playerB = create_enemy_board()
+shotB = Board()
 
-# determine how many hits are needed to win
-maxhit = 0
-for ship in ships:
-    maxhit = maxhit + ship
+shotLog = []
 
-# shoot randomly until at least one is finished
-while enemyB.get_total_status(Status.hit) < maxhit and playerB.get_total_status(Status.hit) < maxhit:
-    shot_random(enemyB)
-    shot_random(playerB)
-
-# Display results
-enemyHits = enemyB.get_total_status(Status.hit)
-enemyMiss = enemyB.get_total_status(Status.miss)
-print(enemyB)
-print("enemy hits = " + str(enemyHits))
-print("enemy misses = " + str(enemyMiss))
-print("accuracy = " + str(float(enemyHits) / float(enemyHits+enemyMiss)))
-
-playerHits = playerB.get_total_status(Status.hit)
-playerMiss = playerB.get_total_status(Status.miss)
-print(playerB)
-print("player hits = " + str(playerHits))
-print("player misses = " + str(playerMiss))
-print("accuracy = " + str(float(playerHits) / float(playerHits+playerMiss)))
+locs = Location("a1")
+while len(ships) > 0:
+    nextShot = pick_next_hit(shotB, ships)
+    print(locs.get_letter(nextShot))
+    response = input("hit(y/Y) ")
+    if response.upper() == "Y":
+        shotB.set_box_status(nextShot, Status.hit)
+    else:
+        shotB.set_box_status(nextShot, Status.miss)
+    print(shotB)
+    response = input("ship to remove: ")
+    try:
+        ships.remove(int(response))
+    except:
+        continue
